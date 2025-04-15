@@ -1,0 +1,86 @@
+# 連携・処理を行うコンテナを記載
+services:
+  # Webサーバー設定
+  dev-nginx:
+    container_name: "dev-nginx"
+    build:
+      context: ./docker/nginx
+    depends_on:
+      - web-front
+    ports:
+      - 80:80
+    volumes:
+      - ./front:/src
+  web-front:
+    # コンテナ名指定
+    container_name: web-front
+    # Dockerfileを使用したビルド実施
+    build: ./docker/php
+    ports:
+      - 5173:5173
+    depends_on:
+    - mysql
+    # 連携するディレクトリを指定
+    # こちらでは[Document Directory]の連携を行っている
+    volumes:
+    - ./front:/src
+    - /src/node_modules
+    - /src/vendor
+    - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+
+  # APIサーバー
+  web-api:
+    # コンテナ名指定
+    container_name: web-api
+    # Dockerfileを使用したビルド実施
+    build: ./docker/python
+    # 繋げるポート番号を指定
+    ports:
+    - 8080:8080
+    depends_on:
+    - web-front
+    # 連携するディレクトリを指定
+    # こちらでは[Document Directory]の連携を行っている
+    volumes:
+    - ./api:/usr/src/python
+
+  # DBサーバー
+  mysql:
+  # コンテナ名指定
+    container_name: mysql
+    # イメージを使用したビルド実施
+    image: mysql:8.0.41
+    command: --max_allowed_packet=32505856
+    # 連携するディレクトリを指定
+    # こちらではMysqlの設定ファイルを連携している
+    volumes:
+    - ./mysql:/var/lib/mysql
+    # 繋げるポート番号を指定
+    ports:
+    - 3306:3306
+    # 初期環境の作成
+    environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_DATABASE=local_db
+    - MYSQL_USER=tester
+    - MYSQL_PASSWORD=T0129est31
+
+  # インメモリデータベース
+  dev-redis:
+    image: redis:7.4.2-alpine
+    container_name: "dev-redis"
+    ports:
+      - 16379:6379
+
+  #phpMyAdmin用コンテナ
+  phpmyadmin:
+    container_name: phpMyAdmin
+    depends_on:
+      - mysql
+    image: phpmyadmin/phpmyadmin
+    environment:
+    - PMA_HOST=mysql
+    - UPLOAD_LIMIT=64M
+    restart: always
+    ports:
+      - "8001:80"

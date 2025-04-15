@@ -1,0 +1,4 @@
+/mysql/*
+!/mysql/README.md
+/api/__pycache__/
+/api/*/__pycache__
