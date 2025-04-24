@@ -20,10 +20,13 @@ api側を外部インターフェースに見立てる。
 ## 起動時
 ・Gitから必要ソースを落とし込んだ後に下記コマンドを実施。  
 ※[node_modules]及び[vendor]の中身が大容量のためmount実施。  
-※PCの基本スペックの問題でWSL2での構築としていない。こちらで動作が行えるかは別途確認が必要。
+※PCの基本スペックの問題でWSL2での構築としていない。こちらで動作が行えるかは別途確認が必要。  
+※[Shared folders on demand]のポップアップが出た場合は共有(Share it)を選択してください。複数回表示される可能性があります。  
 → docker compose up -d --build ※初回ビルド込みで実施。  
+→→ 初回実行後はlaravelの舞グレートが行われていない。「 php artisan migrate; 」を実施すること  
+→→→ docker compose exec web-front php artisan migrate;
 → docker compose up -d
-
+  
 ・Viteを実行。Vite側で設定を付与しているためVuejs側の処理も起動。フロント込みの動作確認が実施できる。  
 → docker compose exec web-front npm run dev
 
