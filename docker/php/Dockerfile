@@ -8,6 +8,7 @@ RUN apt-get update \
     zip \
     unzip \
     vim \
+    less \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libmcrypt-dev \

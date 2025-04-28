@@ -43,7 +43,6 @@ services:
     # こちらでは[Document Directory]の連携を行っている
     volumes:
     - ./api:/usr/src/python
-
   # DBサーバー
   mysql:
   # コンテナ名指定
@@ -55,6 +54,7 @@ services:
     # こちらではMysqlの設定ファイルを連携している
     volumes:
     - ./mysql:/var/lib/mysql
+    - ./docker/mysql:/docker-entrypoint-initdb.d
     # 繋げるポート番号を指定
     ports:
     - 3306:3306
@@ -84,3 +84,5 @@ services:
     restart: always
     ports:
       - "8001:80"
+volumes:
+  mysql:

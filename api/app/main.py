@@ -1,15 +1,19 @@
-from typing import Union
-
+from typing import Union, List
+from app.api import test
 from fastapi import FastAPI
+from app.api import member, news
+import app.shemas.main as main_schema
 
+# FastAPI指定
 app = FastAPI()
 
 
-@app.get("/")
+@app.get("/", response_model=main_schema.Main)
 def read_root():
-    return {"Hello": "World"}
+    return main_schema.Main(id=1, title="Hellow World")
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+# ルート割り当て
+app.include_router(member.router)
+app.include_router(news.router)
+app.include_router(test.router)
